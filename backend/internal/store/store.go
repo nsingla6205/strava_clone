@@ -198,6 +198,7 @@ func (s *Store) TrackPoints(activityID, userID string, points []models.LatLng) (
 		return a, nil, nil
 	}
 
+	points = territory.KeepMovedPoints(a.Path, points)
 	a.Path = append(a.Path, points...)
 	a.DistanceM = territory.PathDistanceM(a.Path)
 	a.DurationS = int(time.Since(a.StartedAt).Seconds())
@@ -214,14 +215,26 @@ func (s *Store) TrackPoints(activityID, userID string, points []models.LatLng) (
 	defer tx.Rollback()
 
 	for _, cellID := range cells {
-		_, err := tx.Exec(
-			`INSERT INTO territory (cell_id, user_id, activity_id, claimed_at) VALUES (?, ?, ?, ?)
-			 ON CONFLICT(cell_id) DO UPDATE SET
-			   user_id = excluded.user_id,
-			   activity_id = excluded.activity_id,
-			   claimed_at = excluded.claimed_at`,
-			cellID, userID, activityID, now,
-		)
+		var owner string
+		err := tx.QueryRow(`SELECT user_id FROM territory WHERE cell_id = ?`, cellID).Scan(&owner)
+		alreadyMine := err == nil && owner == userID
+		if err != nil && err != sql.ErrNoRows {
+			return nil, nil, err
+		}
+		if alreadyMine {
+			continue
+		}
+		if err == sql.ErrNoRows {
+			_, err = tx.Exec(
+				`INSERT INTO territory (cell_id, user_id, activity_id, claimed_at) VALUES (?, ?, ?, ?)`,
+				cellID, userID, activityID, now,
+			)
+		} else {
+			_, err = tx.Exec(
+				`UPDATE territory SET user_id = ?, activity_id = ?, claimed_at = ? WHERE cell_id = ?`,
+				userID, activityID, now, cellID,
+			)
+		}
 		if err != nil {
 			return nil, nil, err
 		}

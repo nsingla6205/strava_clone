@@ -90,6 +90,43 @@ func HaversineDistanceM(a, b models.LatLng) float64 {
 	return 2 * R * math.Asin(math.Min(1, math.Sqrt(h)))
 }
 
+// KeepMovedPoints drops GPS noise. A still phone reports a new coordinate every
+// second; anything under minMoveM, or faster than a sprint, is not real movement.
+func KeepMovedPoints(existing, incoming []models.LatLng) []models.LatLng {
+	const minMoveM = 12.0
+	const maxSpeedMps = 30.0
+
+	var last models.LatLng
+	hasLast := false
+	if n := len(existing); n > 0 {
+		last = existing[n-1]
+		hasLast = true
+	}
+
+	kept := make([]models.LatLng, 0, len(incoming))
+	for _, p := range incoming {
+		if !hasLast {
+			kept = append(kept, p)
+			last = p
+			hasLast = true
+			continue
+		}
+		d := HaversineDistanceM(last, p)
+		if d < minMoveM {
+			continue
+		}
+		if p.Timestamp > 0 && last.Timestamp > 0 {
+			dt := float64(p.Timestamp-last.Timestamp) / 1000
+			if dt > 0.2 && d/dt > maxSpeedMps {
+				continue
+			}
+		}
+		kept = append(kept, p)
+		last = p
+	}
+	return kept
+}
+
 func PathDistanceM(path []models.LatLng) float64 {
 	var total float64
 	for i := 1; i < len(path); i++ {

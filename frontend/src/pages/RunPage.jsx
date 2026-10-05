@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import TerritoryMap from '../components/TerritoryMap';
 import useGeolocation from '../hooks/useGeolocation';
-import { formatDistance, formatDuration, formatPace } from '../utils';
+import { distanceM, formatDistance, formatDuration, formatPace } from '../utils';
 
 export default function RunPage() {
   const nav = useNavigate();
@@ -21,6 +21,7 @@ export default function RunPage() {
   const demoTimer = useRef(null);
   const activityRef = useRef(null);
   const pathRef = useRef([]);
+  const lastAccepted = useRef(null);
 
   useEffect(() => {
     activityRef.current = activity;
@@ -43,8 +44,8 @@ export default function RunPage() {
           res.claimed.forEach((c) => map.set(c.cell_id, c));
           return Array.from(map.values());
         });
-        setClaimedFlash((n) => n + res.claimed.length);
       }
+      setClaimedFlash(res.activity?.territory_claimed || 0);
     } catch (err) {
       setError(err.message);
     }
@@ -63,8 +64,17 @@ export default function RunPage() {
     return () => clearInterval(t);
   }, [activity]);
 
-  function pushPoint(lat, lng) {
+  function pushPoint(lat, lng, { force = false } = {}) {
     const pt = { lat, lng, timestamp: Date.now() };
+    const prev = lastAccepted.current;
+    if (!force && prev) {
+      const moved = distanceM(prev, pt);
+      const dt = (pt.timestamp - prev.timestamp) / 1000;
+      // Ignore GPS drift while standing still, and spikes faster than a sprint.
+      if (moved < 12) return;
+      if (dt > 0.2 && moved / dt > 30) return;
+    }
+    lastAccepted.current = pt;
     bufferRef.current.push(pt);
     setPath((p) => [...p, pt]);
   }
@@ -75,6 +85,7 @@ export default function RunPage() {
       const act = await api.startActivity('Territory Run');
       setActivity(act);
       setPath([]);
+      lastAccepted.current = null;
       setClaimedFlash(0);
       setElapsed(0);
 
@@ -82,7 +93,7 @@ export default function RunPage() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (pos) => {
           const { latitude: lat, longitude: lng } = pos.coords;
-          pushPoint(lat, lng);
+          pushPoint(lat, lng, { force: true });
           const bbox = { minLat: lat - 0.02, minLng: lng - 0.02, maxLat: lat + 0.02, maxLng: lng + 0.02 };
           try {
             setCells(await api.territory(bbox));
@@ -115,7 +126,7 @@ export default function RunPage() {
       const baseLng = -122.4194 + (Math.random() - 0.5) * 0.01;
       let lat = baseLat;
       let lng = baseLng;
-      pushPoint(lat, lng);
+      pushPoint(lat, lng, { force: true });
       demoTimer.current = setInterval(() => {
         angle += 0.12;
         lat += Math.cos(angle) * 0.00012;

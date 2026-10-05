@@ -1,3 +1,15 @@
+export function distanceM(a, b) {
+  const R = 6371000;
+  const toRad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * toRad;
+  const dLng = (b.lng - a.lng) * toRad;
+  const lat1 = a.lat * toRad;
+  const lat2 = b.lat * toRad;
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
 export function formatDistance(m) {
   if (m == null) return '0 m';
   if (m < 1000) return `${Math.round(m)} m`;
