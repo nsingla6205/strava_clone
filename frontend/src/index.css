@@ -28,9 +28,10 @@ html,
 body,
 #root {
   margin: 0;
-  min-height: 100%;
   height: 100%;
   background: var(--bg);
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 a {
@@ -43,15 +44,21 @@ input {
   font: inherit;
 }
 
-.app {
-  min-height: 100%;
+.app,
+.auth-root {
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  overflow: hidden;
+}
+
+.auth-root {
+  overflow-y: auto;
 }
 
 .install-banner {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -78,50 +85,72 @@ input {
 }
 
 .topbar {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1rem;
+  padding: calc(0.6rem + env(safe-area-inset-top)) 1rem 0.6rem;
   border-bottom: 1px solid var(--line);
-  background: rgba(11, 13, 16, 0.92);
-  backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  background: var(--bg);
+  z-index: 1500;
 }
 
 .logo {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   letter-spacing: 0.04em;
   color: var(--accent);
-}
-
-.topbar nav {
-  display: flex;
-  gap: 0.35rem;
-  flex: 1;
-}
-
-.topbar nav a {
-  padding: 0.45rem 0.7rem;
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
-.topbar nav a.active {
-  color: var(--text);
-  background: var(--panel-2);
 }
 
 main {
   flex: 1;
   min-height: 0;
+  position: relative;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabbar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1500;
+}
+
+.tabbar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 56px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tabbar svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tabbar a.active {
+  color: var(--accent);
 }
 
 .page {
-  min-height: calc(100vh - 58px);
+  min-height: 100%;
 }
 
 .page.pad {
@@ -133,6 +162,7 @@ main {
 .boot,
 .auth-shell {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   background:
@@ -211,6 +241,8 @@ input {
   color: var(--text);
   border-radius: 10px;
   padding: 0.75rem 0.85rem;
+  /* iOS zooms the page when focusing inputs under 16px. */
+  font-size: 16px;
 }
 
 input:focus {
@@ -286,14 +318,18 @@ input:focus {
   text-align: center;
 }
 
-.map-panel,
+.page.home,
 .page.run,
 .page.activity {
   position: relative;
 }
 
-.map-panel {
-  /* Keep map chrome above Leaflet panes (tiles sit around z-index 200–700). */
+/* Map screens fill main exactly, so dragging the map never scrolls the page. */
+.page.home,
+.page.run {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   isolation: isolate;
 }
 
@@ -305,50 +341,54 @@ input:focus {
 }
 
 .map.full {
-  height: calc(100vh - 58px);
+  position: absolute;
+  inset: 0;
 }
 
 .map.activity-map {
-  height: 48vh;
-  min-height: 280px;
+  height: 45vh;
+  height: 45dvh;
+  min-height: 240px;
 }
 
-.map-overlay {
+.map-stats {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0.75rem;
+  left: 0.75rem;
   z-index: 1100;
-  padding: 1rem 1rem 5.5rem;
-  background: linear-gradient(180deg, transparent, rgba(11, 13, 16, 0.92) 40%);
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 1rem;
+  gap: 1.25rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(20, 24, 31, 0.9);
+  backdrop-filter: blur(10px);
   pointer-events: none;
+  max-width: calc(100% - 5rem);
 }
 
-.map-overlay .stats-row {
-  pointer-events: none;
+.map-stats strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+}
+
+.map-stats small {
+  color: var(--muted);
+  font-size: 0.75rem;
 }
 
 .float-go {
   position: absolute;
   left: 50%;
-  bottom: 1.5rem;
+  bottom: 1.25rem;
   transform: translateX(-50%);
   z-index: 1200;
-  pointer-events: auto;
-  width: 92px;
-  height: 92px;
+  width: 84px;
+  height: 84px;
   box-shadow:
     0 0 0 6px rgba(252, 76, 2, 0.18),
     0 14px 36px rgba(252, 76, 2, 0.45);
-}
-
-.stats-row {
-  display: flex;
-  gap: 1.5rem;
 }
 
 .stats-row .label,
@@ -361,25 +401,18 @@ input:focus {
   color: var(--muted);
 }
 
-.stats-row strong,
 .run-stats strong {
   display: block;
   font-size: 1.35rem;
   margin-top: 0.15rem;
 }
 
-.stats-row small {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
 .feed {
-  padding: 1.25rem 1rem 2rem;
   max-width: 720px;
   margin: 0 auto;
 }
 
-.feed h2,
+.section-title,
 .page h1 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
@@ -424,13 +457,19 @@ input:focus {
   display: inline-block;
 }
 
+.section-title {
+  margin-top: 1.75rem !important;
+}
+
 .run-hud {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 1rem;
-  background: linear-gradient(180deg, transparent, rgba(11, 13, 16, 0.95) 28%);
+  z-index: 1100;
+  padding: 0.75rem;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .run-start {
@@ -621,16 +660,31 @@ input:focus {
 }
 
 @media (max-width: 640px) {
-  .topbar nav a {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.82rem;
-  }
-
   .run-stats {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0.75rem;
   }
 
-  .stats-row strong {
+  .run-stats strong {
     font-size: 1.15rem;
+  }
+
+  .run-start {
+    padding: 1rem;
+  }
+
+  .run-start h1 {
+    font-size: 1.8rem;
+  }
+
+  .page.pad {
+    padding: 1rem 0.85rem 1.5rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .tabbar {
+    grid-template-columns: repeat(4, 120px);
+    justify-content: center;
   }
 }
