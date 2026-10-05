@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+backend/bin
+backend/data
+**/.git
+**/.DS_Store
+**/*.db
+frontend/node_modules
+agent-transcripts

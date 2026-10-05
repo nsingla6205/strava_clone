@@ -1,0 +1,614 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
+
+:root {
+  --bg: #0b0d10;
+  --panel: #14181f;
+  --panel-2: #1c222c;
+  --text: #f4f1ec;
+  --muted: #8b93a0;
+  --accent: #fc4c02;
+  --accent-2: #ff7a3d;
+  --danger: #e11d48;
+  --line: rgba(255, 255, 255, 0.08);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.4;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+  background: var(--bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.install-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.65rem 0.85rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.install-banner p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.install-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(11, 13, 16, 0.92);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.topbar nav a {
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.topbar nav a.active {
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+main {
+  flex: 1;
+  min-height: 0;
+}
+
+.page {
+  min-height: calc(100vh - 58px);
+}
+
+.page.pad {
+  padding: 1.25rem 1rem 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.boot,
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(252, 76, 2, 0.28), transparent 55%),
+    linear-gradient(180deg, #12151a 0%, #0b0d10 60%);
+}
+
+.brand-mark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 12vw, 6rem);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  line-height: 0.9;
+}
+
+.auth-shell {
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.auth-hero {
+  text-align: center;
+}
+
+.auth-tagline {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.auth-card {
+  width: min(400px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.85rem;
+  box-shadow: var(--shadow);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  background: var(--bg);
+  padding: 0.3rem;
+  border-radius: 12px;
+}
+
+.tabs button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.55rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+input {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+}
+
+input:focus {
+  outline: 2px solid rgba(252, 76, 2, 0.45);
+  border-color: transparent;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.2rem;
+  cursor: pointer;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  box-shadow: 0 10px 30px rgba(252, 76, 2, 0.35);
+}
+
+.btn.danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.btn.large {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.05rem;
+}
+
+.btn.tiny {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.btn.go {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+}
+
+.error {
+  color: #fda4af;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.muted.tiny {
+  font-size: 0.8rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.map-panel,
+.page.run,
+.page.activity {
+  position: relative;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  background: #0f1217;
+}
+
+.map.full {
+  height: calc(100vh - 58px);
+}
+
+.map.activity-map {
+  height: 48vh;
+  min-height: 280px;
+}
+
+.map-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem 1rem 1.25rem;
+  background: linear-gradient(180deg, transparent, rgba(11, 13, 16, 0.92) 35%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.map-overlay .btn {
+  pointer-events: auto;
+}
+
+.stats-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stats-row .label,
+.run-stats .label,
+.label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.stats-row strong,
+.run-stats strong {
+  display: block;
+  font-size: 1.35rem;
+  margin-top: 0.15rem;
+}
+
+.stats-row small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.feed {
+  padding: 1.25rem 1rem 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.feed h2,
+.page h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.75rem;
+}
+
+.feed-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.feed-item strong {
+  display: block;
+}
+
+.feed-item span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.feed-item .meta {
+  display: grid;
+  gap: 0.15rem;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.feed-item .cells,
+.accent {
+  color: var(--accent) !important;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.run-hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem;
+  background: linear-gradient(180deg, transparent, rgba(11, 13, 16, 0.95) 28%);
+}
+
+.run-start {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.run-start h1 {
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+}
+
+.run-start p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.run-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  background: rgba(20, 24, 31, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.9rem;
+  margin-bottom: 0.75rem;
+  backdrop-filter: blur(10px);
+}
+
+.activity-detail {
+  padding: 1.25rem 1rem 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.activity-detail .by {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.back {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.board {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.board li {
+  display: grid;
+  grid-template-columns: 2rem auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+}
+
+.board .rank {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: var(--muted);
+}
+
+.board small {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.leaflet-container {
+  font: inherit;
+  background: #0f1217;
+}
+
+/* Darken street tiles; vectors/markers stay in overlay/marker panes. */
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.35);
+}
+
+.loc-marker {
+  background: transparent;
+  border: 0;
+}
+
+.loc-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.35);
+  animation: loc-pulse 1.8s ease-out infinite;
+}
+
+.loc-dot {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+}
+
+.loc-core {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: block;
+}
+
+@keyframes loc-pulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.locate-btn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(20, 24, 31, 0.92);
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow);
+  margin-top: 12px !important;
+  margin-right: 12px !important;
+  backdrop-filter: blur(10px);
+}
+
+.locate-btn:hover {
+  border-color: rgba(59, 130, 246, 0.55);
+}
+
+.locate-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  position: relative;
+  display: block;
+}
+
+.locate-icon::before,
+.locate-icon::after {
+  content: '';
+  position: absolute;
+  background: #3b82f6;
+}
+
+.locate-icon::before {
+  width: 2px;
+  height: 22px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.locate-icon::after {
+  width: 22px;
+  height: 2px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 640px) {
+  .topbar nav a {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  .run-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-row strong {
+    font-size: 1.15rem;
+  }
+}

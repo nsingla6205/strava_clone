@@ -1,0 +1,15 @@
+# Go
+backend/bin/
+backend/data/
+*.db
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env / IDE
+.env
+.DS_Store
+.idea/
+.vscode/
+*.log

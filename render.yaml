@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: turfrun
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /data/turf.db
+      - key: FRONTEND_DIR
+        value: /app/frontend/dist
