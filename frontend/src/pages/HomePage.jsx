@@ -48,10 +48,10 @@ export default function HomePage() {
               <small>{stats?.activities ?? 0} runs</small>
             </div>
           </div>
-          <Link to="/run" className="btn primary go">
-            Go
-          </Link>
         </div>
+        <Link to="/run" className="btn primary go float-go" aria-label="Start a run">
+          Go
+        </Link>
       </section>
 
       <section className="feed">
